@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
 
-// 導入直後は Report-Only で違反がないことを確認し、確認後に false にして適用する
-const cspReportOnly = true;
+// CSP を変更する際は一時的に true（Report-Only）にし、違反がないことを確認してから適用する
+const cspReportOnly = false;
 
 // nonce 方式は全ページが動的レンダリングになり Core Web Vitals とキャッシュ効率を損なうため、
 // 'unsafe-inline' を許可する静的な CSP とする（詳細は AGENTS.md「セキュリティヘッダ」）。
