@@ -1,12 +1,13 @@
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import { buildPageMetadata, getSiteTitle } from "@/lib/metadata";
+import { pages } from "@/lib/pages";
 
 export const metadata = buildPageMetadata({
   locale: defaultLocale,
   title: { absolute: getSiteTitle(defaultLocale) },
   description: getDictionary(defaultLocale).profile.catchphrase,
-  path: "/",
+  path: pages.home.path,
 });
 
 export default function Home() {
