@@ -4,3 +4,8 @@ export const siteUrl = new URL("https://bbbb.dev");
 
 // スキップリンクの遷移先。<main> はルートレイアウトにのみ置く
 export const mainContentId = "main-content";
+
+// 外部プロフィール（JSON-LD の sameAs・Contact のリンク）。LinkedIn / X はアカウント確定後に追加する
+export const profileLinks = {
+  github: "https://github.com/KoroKumagai",
+} as const;

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
+import { JsonLd } from "@/components/JsonLd";
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import { formatTitle, getSiteTitle } from "@/lib/metadata";
 import { mainContentId, siteUrl } from "@/lib/site";
+import { buildSiteGraph } from "@/lib/structuredData";
 import "./globals.css";
 
 // 日本語グリフは unicode-range で必要な分だけ読み込まれるため、preload 対象は latin のみ
@@ -46,6 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id={mainContentId} className="flex-1">
           {children}
         </main>
+        <JsonLd data={buildSiteGraph(defaultLocale)} />
       </body>
     </html>
   );
