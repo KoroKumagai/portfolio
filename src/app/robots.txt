@@ -1,0 +1,18 @@
+# Search engines and AI search / answer crawlers are allowed.
+# AI training crawlers are disallowed (also enforced by Cloudflare AI Crawl Control).
+# Content Signals: https://contentsignals.org/
+
+User-Agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
+Allow: /
+
+User-Agent: GPTBot
+User-Agent: ClaudeBot
+User-Agent: Google-Extended
+User-Agent: Applebot-Extended
+User-Agent: CCBot
+User-Agent: Meta-ExternalAgent
+User-Agent: Bytespider
+Disallow: /
+
+Sitemap: https://bbbb.dev/sitemap.xml
