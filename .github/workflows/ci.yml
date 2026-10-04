@@ -19,6 +19,7 @@ on:
 permissions:
   contents: read
 
+# cleanup-preview.yml も同じ group（CI/CD-<ref>）を使う。ワークフロー名を変える場合はあわせて更新する
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   # PR は新しい push で古い実行を止める。本番デプロイは途中で止めず順番に実行する
