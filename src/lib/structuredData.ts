@@ -2,6 +2,7 @@ import type {
   BreadcrumbList,
   Graph,
   Person,
+  ProfilePage,
   WebSite,
   WithContext,
 } from "schema-dts";
@@ -21,6 +22,7 @@ export function buildSiteGraph(locale: Locale): Graph {
     "@type": "Person",
     "@id": personId,
     name: profile.name,
+    alternateName: profile.nameJa,
     jobTitle: profile.role,
     description: profile.catchphrase,
     url: siteUrl.href,
@@ -62,5 +64,21 @@ export function buildBreadcrumbList(
       name,
       item: new URL(path, siteUrl).href,
     })),
+  };
+}
+
+// About ページ。人物の情報はサイト共通の Person を @id で参照し、定義を重複させない
+export function buildProfilePage(
+  locale: Locale,
+  { name, path }: { name: string; path: string },
+): WithContext<ProfilePage> {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    name,
+    url: new URL(path, siteUrl).href,
+    inLanguage: locale,
+    isPartOf: { "@id": websiteId },
+    mainEntity: { "@id": personId },
   };
 }
