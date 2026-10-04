@@ -1,0 +1,94 @@
+name: CI/CD
+
+# PR: lint・ビルドの検証とプレビュー環境へのデプロイ
+# main への push: 本番デプロイ（Cloudflare Pages のプロダクションブランチを main に設定しておく）
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# 既定は読み取りのみ。追加の権限が必要なジョブでのみ個別に付与する
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # PR は新しい push で古い実行を止める。本番デプロイは途中で止めず順番に実行する
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # サードパーティ製を含むアクションは、タグの付け替えによる改ざんを防ぐためコミット SHA で固定する
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+      # シークレットを持つデプロイジョブとビルドを分離するため、成果物として受け渡す
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: site
+          path: out
+          if-no-files-found: error
+          retention-days: 3
+
+  deploy:
+    needs: build
+    # フォークからの PR にはシークレットが渡らないため、デプロイは同一リポジトリのブランチに限る
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # デプロイ URL を PR やデプロイ履歴に表示するため、GitHub の Environment として記録する
+    environment:
+      name: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      # wrangler はロックファイルで固定したバージョンを使う（ローカルの npm run preview と揃える）
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site
+          path: out
+
+      - id: deploy
+        # ブランチ名は PR 作成者が自由に付けられる値のため、式展開でコマンドに埋め込まず環境変数で渡す
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.json
+        run: |
+          npx wrangler pages deploy out \
+            --project-name="$PROJECT_NAME" \
+            --branch="$BRANCH" \
+            --commit-hash="$COMMIT_HASH"
+          # プレビューはブランチごとに固定のエイリアス URL を優先し、PR の確認先が push ごとに変わらないようにする
+          url=$(jq -r 'select(.type == "pages-deploy-detailed") | .alias // .url' "$WRANGLER_OUTPUT_FILE_PATH")
+          if [ -z "$url" ]; then
+            echo "::error::デプロイ URL を wrangler の出力から取得できませんでした"
+            exit 1
+          fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
