@@ -71,5 +71,6 @@ npm run preview
    | `CLOUDFLARE_API_TOKEN` | Secret | API token with `Account > Cloudflare Pages > Edit` permission |
    | `CLOUDFLARE_ACCOUNT_ID` | Secret | Cloudflare account ID |
    | `CLOUDFLARE_PAGES_PROJECT` | Variable | Cloudflare Pages project name |
+   | `NEXT_PUBLIC_CF_BEACON_TOKEN` | Variable | Cloudflare Web Analytics site token (optional; the beacon is not loaded when unset) |
 
 3. Add the custom domain `bbbb.dev` in the Pages project's Custom domains (the domain must be a zone in the same Cloudflare account).
