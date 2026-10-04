@@ -2,10 +2,16 @@ name: CI/CD
 
 # PR: lint・ビルドの検証とプレビュー環境へのデプロイ
 # main への push: 本番デプロイ（Cloudflare Pages のプロダクションブランチを main に設定しておく）
+# ビルド結果に影響しないドキュメントだけの変更では実行しない（他のファイルも変更していれば実行される）。
+# Blog 記事を Markdown で管理する可能性があるため、"**.md" ではなくファイル名で指定する
 on:
   pull_request:
+    paths-ignore:
+      - README.md
   push:
     branches: [main]
+    paths-ignore:
+      - README.md
 
 # 既定は読み取りのみ。追加の権限が必要なジョブでのみ個別に付与する
 permissions:

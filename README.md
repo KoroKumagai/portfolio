@@ -53,6 +53,7 @@ The site is built as a static export (`out/`) and deployed to Cloudflare Pages b
 
 - Pull requests: lint, build, and deploy to a preview URL per branch (pull requests from forks are built but not deployed)
 - Push to `main`: deploy to production
+- Changes to `README.md` only do not trigger the workflow, since they do not affect the build output
 
 Security headers are defined in [`src/lib/securityHeaders.ts`](src/lib/securityHeaders.ts) and generated into `out/_headers` at build time. To check the production build locally with the same headers:
 
