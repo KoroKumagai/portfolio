@@ -80,3 +80,9 @@ npm run preview
    | `NEXT_PUBLIC_CF_BEACON_TOKEN` | Variable | Cloudflare Web Analytics site token (optional; the beacon is not loaded when unset) |
 
 3. Add the custom domain `bbbb.dev` in the Pages project's Custom domains (the domain must be a zone in the same Cloudflare account).
+
+## License
+
+The source code is licensed under the [MIT License](LICENSE).
+
+The site content is not covered by the MIT License and may not be reused without permission. This includes the profile, career, and other text in `src/i18n/dictionaries/`, the generated Open Graph image, and the name of Koro Kumagai. © 2026 Koro Kumagai. All rights reserved.
