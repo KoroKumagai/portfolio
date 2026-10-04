@@ -3,6 +3,7 @@ import { JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
 import { CloudflareWebAnalytics } from "@/components/CloudflareWebAnalytics";
 import { JsonLd } from "@/components/JsonLd";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import { formatTitle, getSiteTitle } from "@/lib/metadata";
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           {dict.a11y.skipToContent}
         </a>
+        <SiteHeader locale={defaultLocale} />
         <main id={mainContentId} className="flex-1">
           {children}
         </main>
