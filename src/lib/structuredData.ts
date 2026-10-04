@@ -1,4 +1,10 @@
-import type { Graph, Person, WebSite } from "schema-dts";
+import type {
+  BreadcrumbList,
+  Graph,
+  Person,
+  WebSite,
+  WithContext,
+} from "schema-dts";
 import type { Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import { profileLinks, siteUrl } from "./site";
@@ -33,4 +39,28 @@ export function buildSiteGraph(locale: Locale): Graph {
   };
 
   return { "@context": "https://schema.org", "@graph": [website, person] };
+}
+
+type BreadcrumbItem = { name: string; path: string };
+
+// 下層ページのパンくず。先頭のホームは共通で付与し、呼び出し側は自ページまでを渡す
+export function buildBreadcrumbList(
+  locale: Locale,
+  items: BreadcrumbItem[],
+): WithContext<BreadcrumbList> {
+  const trail = [
+    { name: getDictionary(locale).breadcrumb.home, path: "/" },
+    ...items,
+  ];
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: trail.map(({ name, path }, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name,
+      item: new URL(path, siteUrl).href,
+    })),
+  };
 }
