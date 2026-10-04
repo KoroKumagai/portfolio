@@ -10,8 +10,9 @@ const cspReportOnly = false;
 // 外部リソースを追加する場合は、ここの許可リストも更新する
 const cspDirectives = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
-  "connect-src 'self'",
+  // Cloudflare Web Analytics: ビーコンの配信元（script-src）と計測データの送信先（connect-src）
+  "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
+  "connect-src 'self' https://cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
