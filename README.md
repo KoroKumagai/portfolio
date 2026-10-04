@@ -42,6 +42,11 @@ src/
   lib/              Site constants, metadata, structured data, security headers
 ```
 
+## Conventions
+
+- Links open in the same tab, including links to external sites (no `target="_blank"`). Opening new tabs unexpectedly breaks the back button and is easy to miss for screen reader and magnifier users; users can still choose to open a new tab themselves (WCAG technique G201).
+  - Exception: links where leaving the page would lose user input (e.g. the privacy policy link near a form) open in a new tab, with `rel="noopener noreferrer"` and a visible and screen-reader-announced indication that they open in a new tab.
+
 ## Deploy
 
 The site is built as a static export (`out/`) and deployed to Cloudflare Pages by GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
