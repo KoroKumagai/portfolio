@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
 import { CloudflareWebAnalytics } from "@/components/CloudflareWebAnalytics";
 import { JsonLd } from "@/components/JsonLd";
+import { SiteFooter } from "@/components/SiteFooter";
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import { formatTitle, getSiteTitle } from "@/lib/metadata";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id={mainContentId} className="flex-1">
           {children}
         </main>
+        <SiteFooter locale={defaultLocale} />
         <JsonLd data={buildSiteGraph(defaultLocale)} />
         <CloudflareWebAnalytics />
       </body>
