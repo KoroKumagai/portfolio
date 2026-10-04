@@ -10,6 +10,8 @@ const domain = siteUrl.host;
 export const alt = `${profile.name}（${profile.role}）: ${profile.catchphrase}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+// 静的エクスポート（output: "export"）ではビルド時生成を明示する必要がある
+export const dynamic = "force-static";
 
 // satori は CSS 変数を解決できないため、globals.css のダークテーマ（既定）の値を写している
 const colors = {
