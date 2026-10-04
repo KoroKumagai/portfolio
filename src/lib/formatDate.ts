@@ -7,3 +7,12 @@ export function formatDate(date: string, locale: Locale): string {
     timeZone: "UTC",
   }).format(new Date(date));
 }
+
+// 経歴などの "YYYY-MM"（年月のみ）を整形する
+export function formatYearMonth(yearMonth: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  }).format(new Date(`${yearMonth}-01`));
+}
