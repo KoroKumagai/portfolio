@@ -16,6 +16,9 @@ export const metadata = buildPageMetadata({
   type: "profile",
 });
 
+// 縦並び（狭い画面）のときだけ、項目の間に余白を入れる
+const termClassName = "mt-2 text-muted first:mt-0 sm:mt-0";
+
 export default function AboutPage() {
   const { path } = pages.about;
 
@@ -74,10 +77,11 @@ export default function AboutPage() {
               </p>
               <h3 className="mt-2 text-lg font-bold">{entry.organization}</h3>
               <p className="mt-3 leading-8">{entry.summary}</p>
-              <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-                <dt className="text-muted">{about.roleLabel}</dt>
+              {/* 狭い画面ではラベルと値を縦に並べ、値の列が細くなりすぎないようにする */}
+              <dl className="mt-4 grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[auto_1fr] sm:gap-y-2">
+                <dt className={termClassName}>{about.roleLabel}</dt>
                 <dd>{entry.role}</dd>
-                <dt className="text-muted">{about.projectsLabel}</dt>
+                <dt className={termClassName}>{about.projectsLabel}</dt>
                 <dd>
                   <ul className="space-y-1">
                     {entry.projects.map((project) => (
@@ -85,7 +89,7 @@ export default function AboutPage() {
                     ))}
                   </ul>
                 </dd>
-                <dt className="text-muted">{about.technologiesLabel}</dt>
+                <dt className={termClassName}>{about.technologiesLabel}</dt>
                 <dd>
                   <ul className="flex flex-wrap gap-x-3 gap-y-1 font-mono">
                     {entry.technologies.map((technology) => (
