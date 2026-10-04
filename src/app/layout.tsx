@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
+import { CloudflareWebAnalytics } from "@/components/CloudflareWebAnalytics";
 import { JsonLd } from "@/components/JsonLd";
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <JsonLd data={buildSiteGraph(defaultLocale)} />
+        <CloudflareWebAnalytics />
       </body>
     </html>
   );
