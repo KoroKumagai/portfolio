@@ -1,0 +1,57 @@
+name: Cleanup preview deployments
+
+# PR を閉じた（マージを含む）とき、そのブランチのプレビューデプロイを削除する。
+# マージ後も古い内容がプレビュー URL で公開され続けるのを防ぐ。本番デプロイは対象外。
+# どのファイルを変更した PR でもプレビューは残り得るため、paths-ignore は付けない
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+# PR を閉じた時点で CI/CD のデプロイが実行中だと、削除後に新しいプレビューが作られてしまう。
+# ci.yml と同じ concurrency group に入れ、実行中のデプロイの完了を待ってから削除する
+concurrency:
+  group: CI/CD-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    # プレビューは同一リポジトリのブランチにのみデプロイしている（フォークの PR にはシークレットも渡らない）
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # wrangler はロックファイルで固定したバージョンを使う（ci.yml の deploy ジョブと揃える）
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # ブランチ名は PR 作成者が自由に付けられる値のため、式展開でコマンドに埋め込まず環境変数で渡す
+      - env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT_NAME: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          # 一覧の取得に失敗したときに「削除対象なし」と誤判定しないよう、パイプの途中の失敗も検知する
+          set -o pipefail
+          # 一覧は直近のデプロイのみを返す（全件はたどらない）。PR を閉じた直後に実行する前提
+          ids=$(npx wrangler pages deployment list --project-name="$PROJECT_NAME" --environment=preview --json \
+            | jq -r --arg branch "$BRANCH" '.[] | select(.Branch == $branch) | .Id')
+          if [ -z "$ids" ]; then
+            echo "No preview deployments for this branch"
+            exit 0
+          fi
+          for id in $ids; do
+            # ブランチのエイリアス URL が指す最新のデプロイも削除するため --force を付ける
+            npx wrangler pages deployment delete "$id" --project-name="$PROJECT_NAME" --force
+          done
