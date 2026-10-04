@@ -10,6 +10,10 @@ export const ja = {
   breadcrumb: {
     home: "ホーム",
   },
+  footer: {
+    builtWith: "Built with Next.js",
+    source: "Source",
+  },
   privacy: {
     title: "プライバシーポリシー",
     description:

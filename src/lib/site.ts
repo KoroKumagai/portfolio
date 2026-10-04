@@ -10,5 +10,8 @@ export const profileLinks = {
   github: "https://github.com/KoroKumagai",
 } as const;
 
+// 本サイトのソースコード（フッターの「Source」）
+export const sourceRepositoryUrl = "https://github.com/KoroKumagai/portfolio";
+
 // 問い合わせ先（Contact・Privacy Policy）
 export const contactEmail = "koro.kumagai@bbbb.dev";
