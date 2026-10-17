@@ -58,8 +58,15 @@ jobs:
 
   deploy:
     needs: build
-    # フォークからの PR にはシークレットが渡らないため、デプロイは同一リポジトリのブランチに限る
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+    # フォークからの PR にはシークレットが渡らないため、デプロイは同一リポジトリのブランチに限る。
+    # Dependabot の PR も除く。Actions のシークレットが渡らないうえ、更新直後の依存で npm ci した環境に
+    # デプロイ用トークンを渡さないため（lint・ビルドの確認は build ジョブで足りる）。
+    # 判定は PR の作成者で行い、cleanup-preview.yml と条件を揃える（実行者で判定すると、人が push した
+    # ときだけプレビューが作られ、Dependabot が PR を閉じたときに削除できず残る）
+    if: >-
+      github.event_name == 'push' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.user.login != 'dependabot[bot]')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     # デプロイ URL を PR やデプロイ履歴に表示するため、GitHub の Environment として記録する
