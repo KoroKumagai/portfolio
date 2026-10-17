@@ -41,6 +41,11 @@ updates:
       - dependency-name: typescript
         update-types:
           - version-update:semver-major
+      # ESLint 10 は eslint-config-next が使う eslint-plugin-react が未対応で lint が失敗するため見送る。
+      # eslint-config-next が対応したら外す
+      - dependency-name: eslint
+        update-types:
+          - version-update:semver-major
 
   - package-ecosystem: github-actions
     directory: /
