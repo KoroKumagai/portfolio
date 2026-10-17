@@ -1,0 +1,62 @@
+# 依存関係の定期更新（version updates）。脆弱性の修正（security updates）はリポジトリ設定で有効にしており、
+# cooldown やスケジュールに関係なくすぐに PR が作られる
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    # 作業は主に週末に行うため、土曜の朝に PR が揃っているようにする
+    schedule:
+      interval: weekly
+      day: saturday
+      time: "06:00"
+      timezone: Asia/Tokyo
+    # 公開直後のバージョンは取り込まない。乗っ取られたパッケージの悪意あるバージョンは数日以内に
+    # 取り下げられることが多いため、一定期間待つことでサプライチェーン攻撃の影響を受けにくくする
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    # 先に一致したグループに入る。メジャー更新は影響が大きいため、どのグループにも入れず個別の PR にする
+    groups:
+      # eslint-config-next は next と同じバージョンに揃える必要があるため、メジャー更新も含めてまとめる
+      next:
+        patterns:
+          - next
+          - eslint-config-next
+          - "@next/*"
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # Node.js v24 LTS で動かすため、型定義もランタイムのメジャーバージョンに合わせる
+      - dependency-name: "@types/node"
+        update-types:
+          - version-update:semver-major
+      # TypeScript 7 への移行は typescript-eslint が対応するまで見送る
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: saturday
+      time: "06:00"
+      timezone: Asia/Tokyo
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: ci
+      include: scope
+    # ワークフロー内のアクションはコミット SHA で固定しており、Dependabot が SHA とバージョンのコメントを更新する
+    groups:
+      actions:
+        patterns:
+          - "*"
