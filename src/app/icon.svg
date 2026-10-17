@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="4B">
+  <title>4B</title>
+  <rect width="64" height="64" rx="10" fill="#073B5C"/>
+
+  <!-- top-left: geometric 4 -->
+  <path fill="#FFFFFF" fill-rule="evenodd" d="
+    M10 27
+    L23.6 11
+    H31
+    V31
+    H10
+    Z
+
+    M20.2 24
+    H25
+    V18.2
+    Z
+  "/>
+
+  <!-- top-right: upper B -->
+  <path fill="#FFFFFF" fill-rule="evenodd" d="
+    M33 11
+    H45.5
+    L53 18.5
+    V27
+    L49 31
+    H33
+    Z
+
+    M40 17
+    H44.5
+    L47 19.5
+    V23.8
+    L44.8 26
+    H40
+    Z
+  "/>
+  <path fill="#55DDE0" d="M33 27 H49 L45 31 H33 Z"/>
+
+  <!-- bottom-left: lower arm of 4 -->
+  <path fill="#FFFFFF" d="M10 33 H31 V39 H20 L14 36 Z"/>
+  <path fill="#55DDE0" d="M25 39 L31 33 V53 L25 47 Z"/>
+
+  <!-- bottom-right: lower B -->
+  <path fill="#FFFFFF" fill-rule="evenodd" d="
+    M33 33
+    H45.5
+    L53 40.5
+    V48
+    L48 53
+    H33
+    Z
+
+    M40 39
+    H44.5
+    L47 41.5
+    V45.2
+    L44.2 48
+    H40
+    Z
+  "/>
+</svg>
