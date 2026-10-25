@@ -25,5 +25,10 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "4.151.1"
+  },
+  "overrides": {
+    "miniflare": {
+      "undici": "^7.30.1"
+    }
   }
 }
