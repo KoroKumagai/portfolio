@@ -24,7 +24,7 @@
     "schema-dts": "^2.1.0",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "wrangler": "4.151.1"
+    "wrangler": "4.152.0"
   },
   "overrides": {
     "miniflare": {
